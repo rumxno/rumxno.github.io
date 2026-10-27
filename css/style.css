@@ -1,0 +1,734 @@
+/* =====================================================================
+   RUMANO’ · styles
+   One film: pure black, silver light, one crimson accent.
+   ===================================================================== */
+
+:root {
+  --black: #000;
+  --text: #f2f2ee;
+  --text-it: #c9cdd4;
+  --text-quiet: #8a8f98;
+  --crimson: #b3242c;
+
+  --serif: "EB Garamond", Georgia, "Times New Roman", serif;   /* the words: always italic */
+  --display: "Cinzel", Georgia, serif;                         /* titles: RUMANO’ and the story title */
+  --title: #eee6d6;                                            /* warm off-white, like light through film */
+  --title-glow: 0 0 .3em rgba(255, 236, 205, .28), 0 0 1.2em rgba(255, 236, 205, .12);
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --measure: 32rem;
+  /* side margin, kept clear of the notch when a phone is turned sideways */
+  --gutter: max(clamp(1.5rem, 7vw, 3rem), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  background: var(--black);
+  color: var(--text);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* no grey box flashing over links on tap; each link has its own :active instead */
+  -webkit-tap-highlight-color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+body {
+  margin: 0;
+  background: var(--black);
+  font-family: var(--serif);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Film grain over everything: one static texture, costs nothing while scrolling */
+body::after {
+  content: "";
+  position: fixed; inset: 0; z-index: 50;
+  pointer-events: none;
+  opacity: .09;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+a { color: inherit; text-decoration: none; touch-action: manipulation; }
+a:focus-visible { outline: 1px solid var(--text); outline-offset: 6px; }
+img { display: block; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.skip {
+  position: absolute; left: 1rem; top: -4rem; z-index: 60;
+  padding: .85rem 1rem; background: var(--text); color: var(--black);
+  font: .875rem var(--sans);
+}
+.skip:focus { top: calc(1rem + var(--safe-top)); }
+
+/* ---------------------------------------------------------------------
+   The screen behind the words
+   --------------------------------------------------------------------- */
+.stage {
+  position: fixed; inset: 0; z-index: 0;
+  overflow: hidden;
+  background: var(--black);
+  pointer-events: none;
+}
+.layer { position: absolute; inset: 0; opacity: 0; }
+.hero-layer { opacity: 1; }
+.layer img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform-origin: 50% 55%;
+  will-change: transform;
+}
+.hero-layer .hero-still { object-position: 50% 30%; transform-origin: 50% 20%; }
+
+/* Grade: one film. Desaturate and darken every frame the same way. */
+/* (frames can be brightened one by one with "exposure" in stories.js) */
+.layer img { filter: saturate(.85) contrast(1.08) brightness(.9); }
+/* The opening is the richest screen: brighter, with the city lit */
+.hero-layer img { filter: saturate(.9) contrast(1.1) brightness(1.12); }
+
+.flash {
+  position: absolute; inset: 0; opacity: 0;
+  background: radial-gradient(ellipse 120% 70% at 55% 10%, rgba(225,232,245,.9), rgba(225,232,245,.15) 60%, transparent 85%);
+  mix-blend-mode: screen;
+}
+.rain { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* Strong vignette, plus a soft darkening behind the words in the middle */
+.grade {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 90% 28% at 50% 50%, rgba(0,0,0,.66), rgba(0,0,0,.3) 55%, transparent 100%),
+    radial-gradient(ellipse 95% 85% at 50% 48%, transparent 45%, rgba(0,0,0,.82) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,.3), transparent 18%, transparent 72%, rgba(0,0,0,.6));
+}
+.blackout { position: absolute; inset: 0; background: var(--black); opacity: 1; }
+html:not(.js-motion) .blackout { opacity: 0; }
+
+/* The soft bands behind the words are wider than the screen on purpose; "clip" trims
+   them without stopping the cliffhanger from staying pinned (hidden would) */
+main { position: relative; z-index: 1; overflow-x: clip; }
+
+/* ---------------------------------------------------------------------
+   Lines: English in white serif, Italian beneath in small grey sans
+   --------------------------------------------------------------------- */
+.line {
+  margin: 0 auto;
+  max-width: var(--measure);
+  padding: 0 var(--gutter);
+  text-align: center;
+  text-shadow: 0 1px 20px rgba(0,0,0,.9), 0 0 3px rgba(0,0,0,.85);
+  position: relative;
+  isolation: isolate;
+  /* a word too long for the screen breaks instead of running off it; normal words never do.
+     ("anywhere", not "break-word": the line is centred at its own width, which must be allowed to shrink) */
+  overflow-wrap: anywhere;
+}
+/* A soft dark band behind each line, so it reads on bright fog and fire */
+.line .band {
+  position: absolute; z-index: -1;
+  left: 50%; top: 50%;
+  width: 150vw; height: calc(100% + 7rem);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(0,0,0,.72), rgba(0,0,0,.45) 55%, transparent);
+  pointer-events: none;
+}
+.js-motion .line.r .band { opacity: 0; }
+.line .en {
+  display: block;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 7.4vw, 2.6rem);
+  line-height: 1.12;
+  letter-spacing: 0;
+  color: var(--text);
+  text-wrap: balance;
+  transition: text-shadow .5s ease;
+}
+.line .it {
+  display: block;
+  margin-top: .8em;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.45;
+  letter-spacing: .005em;
+  color: var(--text-it);
+  text-wrap: balance;
+}
+
+/* Lightning briefly lights the words */
+.lit .line .en { text-shadow: 0 0 18px rgba(235,240,255,.55), 0 1px 24px rgba(0,0,0,.85); }
+.lit .name { text-shadow: 0 0 .3em rgba(255, 240, 220, .5), 0 0 1.2em rgba(255, 236, 205, .22), 0 2px 40px rgba(0,0,0,.85); }
+
+/* ---------------------------------------------------------------------
+   Opening
+   --------------------------------------------------------------------- */
+.opening {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+}
+/* Letterbox bars: part of the fixed opening picture, so they always hug the screen edges */
+.bar { position: absolute; left: 0; right: 0; height: 5vh; background: var(--black); z-index: 1; }
+.bar-top { top: 0; }
+.bar-bottom { bottom: 0; }
+
+.opening-inner { position: relative; isolation: isolate; padding: calc(12svh + var(--safe-top)) 0 4svh; text-align: center; }
+.opening-band {
+  position: absolute; z-index: -1; left: 50%; top: 55%;
+  width: 160vw; height: 75%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(0,0,0,.7), rgba(0,0,0,.4) 60%, transparent);
+}
+.js-motion .opening-band { opacity: 0; }
+.opening-line .en { font-style: italic; font-weight: 400; }
+.name {
+  margin: 3rem 0 0;
+  font-family: var(--display);
+  font-weight: 600;
+  /* RUMANO’ is about 6em wide with its tracking: never wider than the screen, even with large text on */
+  font-size: min(clamp(2.5rem, 11.5vw, 6.5rem), calc((100vw - 2 * var(--gutter)) / 6));
+  line-height: 1;
+  letter-spacing: .16em;
+  padding-left: .16em;
+  color: var(--title);
+  /* integrated title: soft warm light behind the letters, dark falloff for legibility */
+  text-shadow: var(--title-glow), 0 2px 40px rgba(0,0,0,.85);
+  transition: text-shadow .5s ease;
+}
+.name .apos { margin-left: -.14em; letter-spacing: 0; }
+.byline {
+  margin: 1.4rem 0 0;
+  font-size: clamp(1.05rem, 4vw, 1.3rem);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--text-it);
+}
+/* A quiet way to follow, for anyone in a hurry */
+.opening-follow {
+  display: inline-flex; align-items: center;
+  min-height: 44px; margin-top: .5rem; padding: 0 .9rem;
+  font: 500 .875rem var(--sans);
+  color: var(--text-quiet);
+  text-shadow: 0 1px 12px rgba(0,0,0,.95), 0 0 3px rgba(0,0,0,.9);
+  transition: color .2s ease, transform .16s ease-out;
+}
+.opening-follow:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .opening-follow:hover { color: var(--text-it); }
+}
+
+/* Scroll cue sits inside the bottom letterbox bar, clear of the picture */
+.cue {
+  position: fixed;
+  left: 50%;
+  bottom: calc(.5rem + var(--safe-bottom));
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 44px; padding: .5rem;
+  -webkit-user-select: none; user-select: none;
+  transition: transform .16s ease-out;
+  font: .75rem var(--sans);
+  color: var(--text-quiet);
+}
+.cue:active { transform: translateX(-50%) scale(.97); }
+.cue-text span { opacity: .75; }
+.cue-line {
+  width: 1px; height: 1.75rem; margin-top: .6rem;
+  background: linear-gradient(to bottom, var(--text-it), transparent);
+  transform-origin: top;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cue-line { animation: cue 2.8s cubic-bezier(.65,0,.35,1) infinite; }
+}
+@keyframes cue {
+  0%   { transform: scaleY(0); opacity: 1; }
+  55%  { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+/* ---------------------------------------------------------------------
+   The story: one line per screen
+   --------------------------------------------------------------------- */
+.beat {
+  min-height: 85vh;
+  min-height: 85svh;
+  display: grid;
+  place-items: center;
+}
+.story-title {
+  margin: 0;
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 600;
+  /* --chars (set by site.js) is the longest word: a long one shrinks to fit the screen.
+     Each letter, with its tracking, is about 1em wide. */
+  font-size: min(clamp(2.6rem, 12vw, 6rem), calc((100vw - 2 * var(--gutter)) / (var(--chars, 5) + .6)));
+  line-height: 1.1;
+  letter-spacing: .22em;
+  padding: 0 var(--gutter) 0 calc(var(--gutter) + .22em);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+  text-transform: uppercase;
+  color: var(--title);
+  text-shadow: var(--title-glow), 0 2px 40px rgba(0,0,0,.85);
+}
+.title-card { min-height: 100vh; min-height: 100svh; }
+.title-block { display: grid; justify-items: center; }
+.story-subtitle {
+  margin: 1rem 0 0;
+  padding: 0 var(--gutter);
+  text-align: center;
+  font-style: italic;
+  font-size: clamp(1.15rem, 4.6vw, 1.45rem);
+  color: var(--text-it);
+  text-shadow: 0 1px 20px rgba(0,0,0,.9);
+}
+
+/* The cliffhanger that ends the story: italic, slower, and held on screen longer.
+   It stays pinned a little above the middle while you scroll, so it is still
+   there when the ending begins. */
+.beat.hook-beat { display: block; min-height: 170vh; min-height: 170svh; padding-top: 30vh; padding-top: 30svh; }
+.hook-beat .line { position: sticky; top: 30vh; top: 30svh; }
+.line.hook .en { font-style: italic; font-weight: 400; font-size: clamp(1.95rem, 8.4vw, 3.2rem); }
+
+/* ---------------------------------------------------------------------
+   What comes next + work with me (over a faint last frame)
+   --------------------------------------------------------------------- */
+.closing {
+  min-height: 100vh;
+  min-height: 100svh;
+  align-content: center;
+  gap: 3.5rem;
+  padding: 3.5rem 0 calc(3rem + var(--safe-bottom));
+}
+.about .line + .line { margin-top: 2rem; }
+.about .line .en { font-size: clamp(1.3rem, 5.4vw, 1.8rem); }
+
+/* The follow button: the one thing every reader should find */
+.follow {
+  display: inline-grid;
+  justify-items: center;
+  gap: .2rem;
+  max-width: calc(100% - 2 * var(--gutter));
+  min-height: 56px;
+  padding: 1rem 1.9rem;
+  border-radius: 999px;
+  background: var(--title);
+  color: #111214;
+  text-align: center;
+  font-family: var(--sans);
+  font-weight: 500;
+  -webkit-user-select: none; user-select: none;
+  transition: background-color .2s ease;
+}
+.follow-en { font-size: 1.0625rem; line-height: 1.3; }
+.follow-it { font-size: .9375rem; line-height: 1.3; color: #3c3f45; }
+.follow-handle { margin-top: .25rem; font-size: .75rem; color: #5b5f66; }
+.follow:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
+/* The reveal animation moves the whole button, so the press goes on its words */
+.follow > span { transition: transform .16s ease-out; }
+.follow:active > span { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .follow:hover { background: #fff8ec; }
+}
+
+/* Work with me: quieter than the follow button */
+.collab {
+  max-width: 34rem;
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+.collab-title {
+  margin: 0 0 1.25rem;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: .16em;
+  padding-left: .16em;
+  text-transform: uppercase;
+  color: var(--title);
+}
+/* the Italian on its own line, smaller, like the other bilingual headings */
+.collab-title span {
+  display: block;
+  margin-top: .35rem;
+  padding: 0;
+  font: italic 400 1.05rem var(--serif);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-it);
+}
+.collab-list { list-style: none; margin: 0 0 1.75rem; padding: 0; display: grid; gap: 1.25rem; }
+.collab-en { display: block; font-style: italic; font-size: 1.2rem; line-height: 1.3; color: var(--text); text-wrap: balance; }
+.collab-it { display: block; margin-top: .35rem; font: 500 1rem/1.45 var(--sans); color: var(--text-it); text-wrap: balance; }
+.write { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .75rem 1rem; }
+.write-btn {
+  display: inline-flex; align-items: center;
+  min-height: 44px; padding: 0 1.25rem;
+  border: 1px solid rgba(242, 242, 238, .35);
+  border-radius: 999px;
+  font: 500 .9375rem var(--sans);
+  color: var(--text);
+  -webkit-user-select: none; user-select: none;
+  transition: border-color .2s ease, transform .16s ease-out;
+}
+.write-btn span { margin-left: .3em; color: var(--text-it); }
+.write-btn:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .write-btn:hover { border-color: rgba(242, 242, 238, .7); }
+}
+/* One tap selects the whole address, ready to copy */
+.write-addr { font: 500 1rem var(--sans); color: var(--text-it); -webkit-user-select: all; user-select: all; overflow-wrap: anywhere; }
+
+.foot { display: grid; justify-items: center; gap: 1.25rem; }
+.again {
+  display: inline-flex; align-items: center;
+  min-height: 44px; padding: 0 1rem;
+  font: .8125rem var(--sans); color: var(--text-it);
+  -webkit-user-select: none; user-select: none;
+  transition: color .2s ease, transform .16s ease-out;
+}
+.again span { opacity: .75; margin-left: .3em; }
+.again:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .again:hover { color: var(--text); }
+}
+.copyright { margin: 0; text-align: center; font: .75rem var(--sans); color: var(--text-quiet); }
+
+/* ---------------------------------------------------------------------
+   Reveal states (only with motion on; otherwise everything is visible)
+   --------------------------------------------------------------------- */
+.js-motion .o,
+.js-motion .r:not(.line),
+.js-motion .line.r .en,
+.js-motion .line.r .it { opacity: 0; }
+.js-motion .line.r .en { transform: translateY(14px); }
+.js-motion .line.r .it { transform: translateY(8px); }
+.js-motion .r:not(.line) { transform: translateY(8px) scale(.985); }
+
+/* ---------------------------------------------------------------------
+   404: the opening picture, dimmed, with one way home
+   --------------------------------------------------------------------- */
+.stage .blackout.lost-dim { opacity: .55; }
+.lost {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.5rem;
+  padding: 2rem 0;
+  text-align: center;
+}
+.lost-code { margin: 0; font: .8125rem var(--sans); letter-spacing: .3em; padding-left: .3em; color: var(--text-quiet); }
+.lost-title {
+  margin: 0;
+  padding: 0 var(--gutter);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(2rem, 8vw, 4.5rem);
+  line-height: 1.1;
+  letter-spacing: .12em;
+  color: var(--title);
+  text-shadow: var(--title-glow), 0 2px 40px rgba(0,0,0,.85);
+  text-wrap: balance;
+}
+.lost .line .en { font-size: clamp(1.3rem, 5.4vw, 1.8rem); }
+.lost-home { margin-top: 1rem; }
+
+/* ---------------------------------------------------------------------
+   The phone: a plain, bright messaging screen over the film.
+   Used twice: the narrator's phone, and the reader's at the end.
+   --------------------------------------------------------------------- */
+.beat.step { min-height: 62vh; min-height: 62svh; }
+.beat.step.last { min-height: 100vh; min-height: 100svh; }
+
+.phone-view {
+  position: fixed; inset: 0; z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  color: #15171a;
+  font-family: var(--sans);
+  font-weight: 500;
+}
+.phone-bg { position: absolute; inset: 0; background: #f3f4f6; opacity: 0; }
+/* Fully hidden whenever the reader is not on a phone or takeover step, whatever any fade was doing */
+.phone-view.gone { visibility: hidden; }
+
+/* The notification that slides down from the top */
+.notif {
+  position: absolute; z-index: 2;
+  top: calc(.75rem + var(--safe-top));
+  left: 0; right: 0;
+  width: min(calc(100% - 1.5rem), 26rem);
+  margin: 0 auto;
+  display: flex; align-items: center; gap: .8rem;
+  padding: .8rem .95rem;
+  border-radius: 1.1rem;
+  background: rgba(246, 247, 249, .96);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .4);
+  opacity: 0;
+  transform: translateY(-120%);
+}
+.notif-app {
+  flex: 0 0 auto;
+  width: 2.4rem; height: 2.4rem;
+  border-radius: .7rem;
+  background: #2a2d33;
+  position: relative;
+}
+.notif-app::before {
+  content: ""; position: absolute; left: 25%; top: 28%; width: 50%; height: 38%;
+  border-radius: .3rem; background: #f3f4f6;
+}
+.notif-text { flex: 1; min-width: 0; display: grid; gap: .1rem; }
+.notif-top { display: flex; justify-content: space-between; gap: .5rem; font-size: 1rem; }
+.notif-top span { font-size: .8125rem; color: #6b7078; }
+.notif-msg { font-size: 1rem; color: #3a3e45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The conversation */
+.convo {
+  position: relative;
+  height: 100%;
+  width: min(100%, 30rem);
+  margin: 0 auto;
+  display: flex; flex-direction: column;
+  opacity: 0;
+}
+.convo-head {
+  display: flex; align-items: center; gap: .75rem;
+  padding: calc(.75rem + var(--safe-top)) 1rem .75rem;
+  border-bottom: 1px solid #e1e3e7;
+  background: #fafbfc;
+}
+.avatar {
+  flex: 0 0 auto;
+  display: grid; place-items: center;
+  width: 2.5rem; height: 2.5rem;
+  border-radius: 50%;
+  background: #d9dce1;
+  color: #5b6068;
+  font-size: 1.05rem;
+}
+.who { display: grid; min-width: 0; }
+.who-en { font-size: 1.0625rem; color: #15171a; }
+.who-it { font-size: .8125rem; color: #6b7078; }
+
+.msgs {
+  flex: 1; min-height: 0;
+  list-style: none; margin: 0;
+  padding: 1rem .9rem .5rem;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: .5rem;
+  overflow: hidden;
+  /* older messages fade out at the top, like a chat scrolled down */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 2.5rem);
+  mask-image: linear-gradient(to bottom, transparent, #000 2.5rem);
+}
+.msg { display: none; flex: 0 0 auto; }
+.msg.on { display: flex; }
+.msg.me { justify-content: flex-end; }
+.bubble {
+  margin: 0;
+  max-width: 82%;
+  padding: .6rem .85rem .65rem;
+  border-radius: 1.15rem;
+  overflow-wrap: anywhere;
+}
+.them .bubble { background: #e3e5e9; border-bottom-left-radius: .35rem; }
+.me .bubble { background: #2a2d33; color: #f5f6f7; border-bottom-right-radius: .35rem; }
+.m-en { display: block; font-size: 1.125rem; line-height: 1.32; }
+.m-it { display: block; margin-top: .3rem; font-size: 1rem; line-height: 1.35; color: #575c64; }
+.me .m-it { color: #b9bec6; }
+
+/* "typing…" */
+.typing { display: none; flex: 0 0 auto; align-self: flex-start; gap: .3rem; padding: .85rem 1rem; border-radius: 1.15rem; border-bottom-left-radius: .35rem; background: #e3e5e9; }
+.typing.on { display: flex; }
+.typing span { width: .45rem; height: .45rem; border-radius: 50%; background: #8d939b; animation: typing 1s ease-in-out infinite; }
+.typing span:nth-child(2) { animation-delay: .15s; }
+.typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes typing {
+  0%, 60%, 100% { opacity: .35; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-2px); }
+}
+.delivered { display: none; flex: 0 0 auto; align-self: flex-end; margin-top: -.25rem; padding-right: .2rem; font-size: .75rem; color: #7b8088; }
+.delivered.on { display: block; }
+
+/* The message box at the bottom, where my words are typed out */
+.convo-input {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .6rem .9rem calc(.6rem + var(--safe-bottom));
+  border-top: 1px solid #e1e3e7;
+  background: #fafbfc;
+}
+.field {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center;
+  min-height: 44px;
+  padding: .5rem 1rem;
+  border: 1px solid #d5d8dd;
+  border-radius: 1.4rem;
+  background: #fff;
+  font-size: 1rem;
+}
+.typed { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.typed:empty { display: none; }
+.placeholder { color: #9aa0a8; }
+.typed:not(:empty) + .placeholder { display: none; }
+.send {
+  flex: 0 0 auto;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: #2a2d33 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5f6f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 19V5M5 12l7-7 7 7'/%3E%3C/svg%3E") center / 20px no-repeat;
+}
+
+/* At the end, the follow button sits under the last message */
+.phone-view[data-kind="takeover"] .phone-bg,
+.phone-view[data-kind="takeover"] .convo { opacity: 1; }
+.phone-view .follow {
+  flex: 0 0 auto;
+  align-self: center;
+  max-width: calc(100% - 2rem);
+  margin: .25rem 1rem 1rem;
+  background: #15171a;
+  color: #f5f6f7;
+  display: none; /* takes no space until it arrives */
+}
+.phone-view .follow .follow-it { color: #b9bec6; }
+.phone-view .follow.on { display: inline-grid; }
+.phone-view.live .follow.on { pointer-events: auto; }
+@media (hover: hover) and (pointer: fine) {
+  .phone-view .follow:hover { background: #2a2d33; }
+}
+
+/* The glitch at the end: picture slices and one scanline, used for about a second */
+.slices, .slice { position: absolute; inset: 0; }
+.slice img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.scanline {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 4;
+  height: 2px;
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(225, 232, 245, .55);
+  box-shadow: 0 0 14px 2px rgba(225, 232, 245, .22);
+}
+
+/* ---------------------------------------------------------------------
+   The hacked screen at the end
+   --------------------------------------------------------------------- */
+/* Short steps: the first message comes with the glitch, the button soon after */
+.takeover .beat.step { min-height: 40vh; min-height: 40svh; }
+.takeover .beat.step.last { min-height: 55vh; min-height: 55svh; }
+
+/* POINT ONE's mark instead of the "?" */
+.avatar.mark { background: #15171a; color: #f3f4f6; font-weight: 500; letter-spacing: -.02em; }
+
+/* The message box, corrupted: part of the hack, not a broken form.
+   It never takes a tap or the keyboard, and screen readers skip it. */
+.convo-input.broken { pointer-events: none; }
+.broken .field {
+  border-color: #c9ccd2;
+  transform: translateX(2px) skewX(-3deg);
+  clip-path: polygon(0 0, 62% 0, 64% 18%, 67% 0, 100% 0, 100% 100%, 0 100%);
+}
+.broken .placeholder { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; letter-spacing: .04em; color: #8d939b; }
+.broken .send {
+  position: relative;
+  opacity: .8;
+  transform: translate(4px, -3px) rotate(-9deg);
+  clip-path: polygon(0 0, 100% 0, 100% 58%, 76% 64%, 100% 72%, 100% 100%, 0 100%);
+}
+.broken .send::after {
+  content: ""; position: absolute; inset: 0;
+  border: 1px solid rgba(42, 45, 51, .35);
+  border-radius: 50%;
+  transform: translate(-6px, 4px);
+}
+
+/* The way out: a broken line of system text with an arrow, not a button */
+/* Big and dark enough to read at arm's length, but still system text breaking down, not a button */
+.exit-hint {
+  flex: 0 0 auto;
+  align-self: center;
+  display: none; /* takes no space until it arrives */
+  justify-items: center; gap: .2rem;
+  margin: 0 1rem .85rem;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: .1em;
+  color: #2a2d33;
+}
+.exit-hint.on { display: grid; }
+.hint-it { font-size: .9375rem; font-weight: 600; color: #4b5058; }
+.hint-arrow {
+  width: .85rem; height: .85rem; margin-top: .25rem;
+  border-right: 3px solid currentColor; border-bottom: 3px solid currentColor;
+  transform: rotate(45deg);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hint-arrow { animation: hint 1.8s ease-in-out infinite; }
+}
+@keyframes hint {
+  0%, 100% { transform: translateY(0) rotate(45deg); }
+  50% { transform: translateY(4px) rotate(45deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typing span { animation: none; }
+}
+
+/* ?slots : label every replaceable picture */
+.show-slots .stage { z-index: 2; }
+.show-slots [data-slot]::after {
+  content: "IMAGE SLOT · " attr(data-slot);
+  position: absolute; left: .75rem; top: calc(.75rem + var(--safe-top)); z-index: 5;
+  padding: .3rem .5rem;
+  background: #ffd400; color: #000;
+  font: 600 .6875rem var(--sans);
+}
+
+@media (min-width: 768px) {
+  .beat { min-height: 90vh; min-height: 90svh; }
+  /* Wide screens: subtitle-width lines, one or two lines across, not a phone column */
+  .line { max-width: 52rem; }
+  .line .en { font-size: clamp(2rem, 2.9vw, 2.9rem); }
+  .line .it { font-size: 1.0625rem; }
+}
+
+/* Wide screens: the figure stands on the left third, so the title card
+   moves over the city and leaves the figure alone in the frame */
+@media (min-aspect-ratio: 5/4) and (min-width: 900px) {
+  .opening { justify-items: end; }
+  .opening-inner { width: 62%; padding-right: 4vw; }
+  .name { font-size: clamp(3rem, 8.5vw, 8rem); }
+}
+
+/* ---------------------------------------------------------------------
+   Sharp type on black, real kerning, no tracking on italics
+   --------------------------------------------------------------------- */
+body {
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* The opening quote: a true focal point, curly quotes, opening mark hung outside the text edge */
+.opening-line .en.quote {
+  font-size: clamp(1.95rem, 8.6vw, 3.2rem);
+  line-height: 1.12;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+.q-open { margin-left: -.42em; }
+.opening-line .it { margin-top: 1em; }

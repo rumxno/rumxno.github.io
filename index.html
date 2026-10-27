@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>RUMANO’ · POINT ONE, a story by Angelo Rumano’</title>
+  <meta name="description" content="POINT ONE, a story in English and Italian by Angelo Rumano’. A missing sister, an Eden android, and a message from an unknown number.">
+  <meta name="author" content="Angelo Rumano’">
+  <link rel="canonical" href="https://rumxno.github.io/">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+
+  <!-- Share previews (WhatsApp, Instagram, iMessage, X, LinkedIn) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="RUMANO’">
+  <meta property="og:title" content="POINT ONE · a story by Angelo Rumano’">
+  <meta property="og:description" content="“Eden took everything from me that night.”">
+  <meta property="og:url" content="https://rumxno.github.io/">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:locale:alternate" content="it_IT">
+  <meta property="og:image" content="https://rumxno.github.io/images/social/share.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="RUMANO’ over a lone figure on a rooftop, facing a dark city in the rain">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="POINT ONE · a story by Angelo Rumano’">
+  <meta name="twitter:description" content="“Eden took everything from me that night.”">
+  <meta name="twitter:image" content="https://rumxno.github.io/images/social/share.jpg">
+  <meta name="twitter:image:alt" content="RUMANO’ over a lone figure on a rooftop, facing a dark city in the rain">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- The opening picture loads first: tall on phones, wide on computers -->
+  <link rel="preload" as="image" href="images/hero/hero-vertical.webp" media="(max-aspect-ratio: 1/1)" fetchpriority="high">
+  <link rel="preload" as="image" href="images/hero/hero-wide.webp" media="(min-aspect-ratio: 1/1)" fetchpriority="high">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Fonts: only the three faces the page uses -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=EB+Garamond:ital,wght@1,400&family=Inter:wght@500&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://rumxno.github.io/#website",
+        "url": "https://rumxno.github.io/",
+        "name": "RUMANO’",
+        "inLanguage": ["en", "it"],
+        "author": { "@id": "https://rumxno.github.io/#person" }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://rumxno.github.io/#person",
+        "name": "Angelo Rumano’",
+        "alternateName": ["Angelo Rumano", "RUMANO’"],
+        "jobTitle": "Storyteller",
+        "url": "https://rumxno.github.io/",
+        "email": "mailto:angelorumani@gmail.com",
+        "sameAs": ["https://www.instagram.com/rumxno.angelo/"]
+      },
+      {
+        "@type": "ShortStory",
+        "@id": "https://rumxno.github.io/#point-one",
+        "name": "POINT ONE",
+        "url": "https://rumxno.github.io/#point-one",
+        "inLanguage": ["en", "it"],
+        "author": { "@id": "https://rumxno.github.io/#person" },
+        "image": "https://rumxno.github.io/images/social/share.jpg",
+        "isPartOf": { "@id": "https://rumxno.github.io/#website" }
+      }
+    ]
+  }
+  </script>
+
+  <script>
+    (function (d) {
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) d.classList.add("js-motion");
+      if (/[?&]slots\b/.test(location.search)) d.classList.add("show-slots");
+      // If the scripts never arrive (very bad signal), show the words anyway.
+      setTimeout(function () { if (!window.__siteReady) d.classList.remove("js-motion"); }, 4000);
+    })(document.documentElement);
+  </script>
+</head>
+<body>
+  <a class="skip" href="#story">Skip to the story</a>
+
+  <!-- ============ THE SCREEN: fixed pictures, rain and grade behind the words ============ -->
+  <div class="stage" aria-hidden="true">
+    <!-- IMAGE SLOT: opening. Tall picture on phones, wide picture on computers. -->
+    <div class="layer hero-layer" data-slot="hero-vertical.webp / hero-wide.webp">
+      <picture>
+        <source media="(min-aspect-ratio: 1/1)" srcset="images/hero/hero-wide.webp" width="1920" height="1080">
+        <img class="hero-still" src="images/hero/hero-vertical.webp" width="1080" height="1920"
+             alt="A lone figure in a long coat faces a dark city in the rain, a red light burning on the tallest tower"
+             fetchpriority="high" decoding="async">
+      </picture>
+      <div class="bar bar-top"></div>
+      <div class="bar bar-bottom"></div>
+    </div>
+    <div class="layer frame-layer"><img alt="" decoding="async"></div>
+    <div class="layer frame-layer"><img alt="" decoding="async"></div>
+    <div class="flash"></div>
+    <canvas class="rain"></canvas>
+    <div class="grade"></div>
+    <div class="blackout"></div>
+  </div>
+
+  <main>
+    <!-- ============ OPENING ============ -->
+    <header class="opening beat" id="top" data-scene="hero">
+      <div class="opening-inner">
+        <span class="opening-band" aria-hidden="true"></span>
+        <p class="line opening-line o">
+          <span class="en quote"><span class="q-open">“</span>Eden took everything from&nbsp;me that night.”</span>
+          <span class="it" lang="it">«Quella notte, Eden mi ha tolto tutto.»</span>
+        </p>
+        <h1 class="name o">RUMANO<span class="apos">’</span></h1>
+        <p class="byline o">Angelo Rumano’</p>
+        <a class="opening-follow o" href="https://www.instagram.com/rumxno.angelo/" rel="noopener" target="_blank">Instagram · @rumxno.angelo</a>
+      </div>
+      <a class="cue o" href="#story" aria-label="Scroll to begin the story">
+        <span class="cue-text">Scroll <span lang="it">/ Scorri</span></span>
+        <span class="cue-line" aria-hidden="true"></span>
+      </a>
+    </header>
+
+    <!-- ============ THE STORY (built from stories.js) ============ -->
+    <div id="story"></div>
+    <noscript><p class="line"><span class="en">Turn on JavaScript to read the story.</span></p></noscript>
+
+    <!-- ============ WHAT COMES NEXT + WORK WITH ME ============ -->
+    <section class="closing beat" data-scene="hero" data-dim="0.8" data-rain="thin" aria-label="What comes next">
+      <div class="about">
+        <p class="line r">
+          <span class="en">POINT ONE is a story in progress.</span>
+          <span class="it" lang="it">POINT ONE è una storia in lavorazione.</span>
+        </p>
+        <p class="line r">
+          <span class="en">The first chapter is coming. Follow to read it first.</span>
+          <span class="it" lang="it">Il primo capitolo sta arrivando. Seguimi per leggerlo in anteprima.</span>
+        </p>
+      </div>
+
+      <!-- Readers come first: the follow button is the strongest thing here -->
+      <a class="follow r" href="https://www.instagram.com/rumxno.angelo/" rel="noopener" target="_blank">
+        <span class="follow-en">Follow for the next chapter</span>
+        <span class="follow-it" lang="it">Seguimi per il prossimo capitolo</span>
+        <span class="follow-handle">Instagram · @rumxno.angelo</span>
+      </a>
+
+      <!-- For artists and studios: quieter than the follow button -->
+      <div class="collab r">
+        <h2 class="collab-title">Work with me <span lang="it">Collaboriamo</span></h2>
+        <ul class="collab-list">
+          <li>
+            <span class="collab-en">Artists: let’s build something together and take it to competitions and awards.</span>
+            <span class="collab-it" lang="it">Artisti: costruiamo qualcosa insieme e portiamolo a concorsi e premi.</span>
+          </li>
+          <li>
+            <span class="collab-en">Studios and companies: I’m looking for work as a creative director.</span>
+            <span class="collab-it" lang="it">Studi e aziende: cerco lavoro come direttore creativo.</span>
+          </li>
+        </ul>
+        <!-- The address is also written out, because a mail link doesn't open on every phone -->
+        <div class="write">
+          <a class="write-btn" href="mailto:angelorumani@gmail.com">Write to me <span lang="it">/ Scrivimi</span></a>
+          <span class="write-addr">angelorumani@gmail.com</span>
+        </div>
+      </div>
+
+      <footer class="foot">
+        <a class="again" href="#top">Read it again <span lang="it">/ Rileggila</span></a>
+        <p class="copyright">© 2026 Angelo Rumano’</p>
+      </footer>
+    </section>
+  </main>
+
+  <script src="stories.js" defer></script>
+  <script src="js/animate.js" defer></script>
+  <script src="js/rain.js" defer></script>
+  <script src="js/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# RUMANO’
+
+> The personal site of Angelo Rumano’, a storyteller and aspiring creative director. Stories are told one line at a time, in English with an Italian translation beneath each line, over cinematic still frames and rain.
+
+The site is a single page. Its story text is built by JavaScript from `stories.js`, so tools that do not run JavaScript should read that file for the full text.
+
+## Stories
+
+- [POINT ONE](https://rumxno.github.io/#point-one): a story in progress, and the name of the series. A woman's sister disappears and nobody looks for her; the Eden android she buys holds her exactly the way her sister used to. On her way to a meeting, an unknown number warns her by text that she is walking into a trap. At the end the sender is revealed as POINT ONE, a hacker group named after the idea that a copy of a person can predict everything they would do except the 0.1%: the one improbable human thing. The first chapter is coming.
+- [Story text (source)](https://rumxno.github.io/stories.js): every line of the story, the phone conversation and the ending, in English and Italian.
+
+## Contact
+
+- [Instagram](https://www.instagram.com/rumxno.angelo/): @rumxno.angelo, follow for the next chapter
+- [Email](mailto:angelorumani@gmail.com): angelorumani@gmail.com, for artists who want to collaborate on work for competitions and awards, and for studios and companies hiring a creative director
